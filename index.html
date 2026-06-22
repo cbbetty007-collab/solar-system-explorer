@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#030713" />
+  <title>星际档案 · 太阳系远征</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="interactions.css" />
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="星际档案首页">
+      <span class="brand-mark"><i></i><i></i></span>
+      <span><small>INTERSTELLAR ARCHIVE</small>星际档案</span>
+    </a>
+    <nav aria-label="主导航">
+      <button class="nav-item active" data-view="explore">探索</button>
+      <button class="nav-item" data-view="archive">行星图鉴</button>
+      <button class="nav-item" data-view="scale">尺度实验室</button>
+    </nav>
+    <div class="profile">
+      <div class="level-copy"><small>探索等级</small><strong>07</strong></div>
+      <div class="xp"><span style="width:68%"></span></div>
+      <button class="sound-toggle" aria-label="切换环境音" aria-pressed="false">⌁</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="explore" class="view active-view" aria-label="太阳系探索">
+      <div class="scene-copy">
+        <div class="eyebrow"><span></span> SOL 03 · INNER SYSTEM</div>
+        <h1>越过寂静，<br><em>抵达未知。</em></h1>
+        <p>选择一个世界，启动你的下一次科学远征。</p>
+      </div>
+
+      <div class="solar-stage" aria-label="交互式行星轨道">
+        <div class="space-world" id="spaceWorld">
+          <div class="sun"><span></span><b></b></div>
+          <div class="orbit orbit-1"></div><div class="orbit orbit-2"></div>
+          <div class="orbit orbit-3"></div><div class="orbit orbit-4"></div>
+          <button class="planet mercury" data-planet="mercury" aria-label="探索水星"><span>水星</span></button>
+          <button class="planet venus" data-planet="venus" aria-label="探索金星"><span>金星</span></button>
+          <button class="planet earth" data-planet="earth" aria-label="探索地球"><span>地球</span></button>
+          <button class="planet mars selected" data-planet="mars" aria-label="探索火星"><span>火星</span></button>
+          <div class="target-ring"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="scan-line" aria-hidden="true"></div>
+        <div class="planet-tooltip" id="planetTooltip" role="status"></div>
+        <div class="flight-controls" aria-label="星图视角控制">
+          <button id="zoomOut" aria-label="缩小星图">−</button>
+          <div><small>ZOOM</small><strong id="zoomValue">100%</strong></div>
+          <button id="zoomIn" aria-label="放大星图">＋</button>
+          <button id="resetView" class="reset-view">重置视角</button>
+          <button id="orbitToggle" class="orbit-toggle active" aria-pressed="true">轨道运动</button>
+        </div>
+        <div class="attitude"><span>ROT <b id="rotationValue">0°</b></span><span>TILT <b id="tiltValue">0°</b></span></div>
+      </div>
+
+      <aside class="mission-panel">
+        <div class="panel-head">
+          <span class="mission-index">任务 03</span>
+          <span class="status"><i></i> 可执行</span>
+        </div>
+        <div class="planet-code" id="planetCode">MARS / 火星</div>
+        <h2 id="missionTitle">火星先锋</h2>
+        <p id="missionDesc">穿越稀薄大气，锁定奥林匹斯山脉的地质信号。</p>
+        <div class="mission-stats">
+          <div><small>平均距离</small><strong id="distance">2.28 亿 km</strong></div>
+          <div><small>信号延迟</small><strong id="delay">12m 42s</strong></div>
+        </div>
+        <div class="objective">
+          <div class="objective-top"><span>远征进度</span><strong id="progressText">2 / 5</strong></div>
+          <div class="progress"><span id="progressBar" style="width:40%"></span></div>
+          <p><i class="check">✓</i> 完成轨道校准</p>
+          <p id="activeObjective"><i class="pulse"></i> 扫描地表矿物</p>
+        </div>
+        <button id="launchBtn" class="launch-btn"><span>启动探测</span><i>→</i></button>
+        <p class="reward">任务奖励 <strong>+ 120 星尘</strong></p>
+      </aside>
+
+      <div class="planet-dock" role="list" aria-label="行星选择">
+        <button data-planet="mercury" role="listitem"><i class="mini mercury-mini"></i><span>水星<small>MERCURY</small></span></button>
+        <button data-planet="venus" role="listitem"><i class="mini venus-mini"></i><span>金星<small>VENUS</small></span></button>
+        <button data-planet="earth" role="listitem"><i class="mini earth-mini"></i><span>地球<small>EARTH</small></span></button>
+        <button data-planet="mars" class="active" role="listitem"><i class="mini mars-mini"></i><span>火星<small>MARS</small></span></button>
+        <button data-planet="jupiter" role="listitem"><i class="mini jupiter-mini"></i><span>木星<small>JUPITER</small></span></button>
+        <button data-planet="saturn" role="listitem"><i class="mini saturn-mini"></i><span>土星<small>SATURN</small></span></button>
+      </div>
+      <div class="hint"><span>拖拽星图</span><i></i><span>滚轮缩放</span></div>
+    </section>
+
+    <section id="archive" class="view secondary-view" aria-label="行星图鉴">
+      <div class="section-heading"><span>PLANETARY ARCHIVE</span><h2>八个世界，八种命运</h2><p>点亮档案，解锁太阳系的隐藏线索。</p></div>
+      <div id="archiveGrid" class="archive-grid"></div>
+    </section>
+
+    <section id="scale" class="view secondary-view" aria-label="尺度实验室">
+      <div class="section-heading"><span>SCALE LAB 03 / 08</span><h2>如果太阳只有篮球大</h2><p>拖动比例尺，亲手感受宇宙的巨大空旷。</p></div>
+      <div class="scale-toolbar">
+        <div class="segmented"><button class="active" data-scale-mode="visual">可视比例</button><button data-scale-mode="real">真实比例</button></div>
+        <div class="scale-value">当前模型 <strong id="scaleValue">1 : 5,900,000,000</strong></div>
+      </div>
+      <div class="scale-canvas">
+        <div class="scale-sun"></div>
+        <div class="scale-track"><span></span></div>
+        <div class="scale-earth"><i></i><strong>地球</strong><small id="earthDistance">距离太阳约 26 米</small></div>
+        <div class="scale-note"><span>26 m</span><p>大约是一节标准泳池的长度</p></div>
+        <input id="scaleRange" type="range" min="1" max="100" value="48" aria-label="调整太阳系比例" />
+      </div>
+      <button id="challengeBtn" class="launch-btn scale-challenge"><span>开始尺度挑战</span><i>→</i></button>
+    </section>
+  </main>
+
+  <section id="planetShowcase" class="planet-showcase" role="dialog" aria-modal="true" aria-labelledby="showcaseName" hidden>
+    <div class="showcase-grid" aria-hidden="true"></div>
+    <button id="closeShowcase" class="showcase-close" aria-label="关闭行星介绍">× <span>返回星图</span></button>
+    <button id="prevPlanet" class="showcase-switch prev" aria-label="查看上一颗行星">←<span>上一颗</span></button>
+    <button id="nextPlanet" class="showcase-switch next" aria-label="查看下一颗行星"><span>下一颗</span>→</button>
+    <div class="showcase-visual" id="showcaseVisual">
+      <div class="showcase-orbit orbit-a"></div><div class="showcase-orbit orbit-b"></div>
+      <div id="showcasePlanet" class="showcase-planet mars-showcase"><canvas id="planet3dCanvas" aria-label="可旋转的三维行星模型"></canvas><i></i><b></b></div>
+      <div class="planet-coordinate"><span>OBJECT LOCKED</span><strong id="showcaseCoordinate">04 / 08</strong></div>
+      <div class="drag-tip">拖拽观察 · 滚轮缩放</div>
+    </div>
+    <article class="showcase-profile">
+      <div class="showcase-eyebrow"><span id="showcaseClass">TERRESTRIAL PLANET</span><b id="showcaseNumber">NO. 04</b></div>
+      <h2 id="showcaseName">火星</h2>
+      <div id="showcaseEnglish" class="showcase-english">MARS</div>
+      <p id="showcaseBio">一颗寒冷而干燥的红色世界，保存着远古河流与火山活动留下的痕迹。</p>
+      <div class="showcase-ability">
+        <small>世界特性 / UNIQUE TRAIT</small>
+        <strong id="showcaseTrait">远古水世界</strong>
+        <p id="showcaseTraitDesc">地表峡谷与沉积物证明，液态水曾经塑造这颗行星。</p>
+      </div>
+      <div class="showcase-stats">
+        <div><small>直径</small><strong id="showcaseDiameter">6,779 km</strong></div>
+        <div><small>表面重力</small><strong id="showcaseGravity">0.38 G</strong></div>
+        <div><small>一天长度</small><strong id="showcaseDay">24.6 h</strong></div>
+      </div>
+      <div class="showcase-actions">
+        <button id="showcaseMission" class="launch-btn"><span>选择此行星</span><i>→</i></button>
+        <button id="showcaseArchive" class="text-action">查看完整档案</button>
+      </div>
+    </article>
+    <div class="showcase-index" id="showcaseIndex"></div>
+  </section>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-card">
+      <button id="closeModal" class="close" aria-label="关闭">×</button>
+      <span class="modal-kicker">KNOWLEDGE CHECK</span>
+      <h2 id="modalTitle">探测信号已锁定</h2>
+      <p id="modalText">火星上的奥林匹斯山是太阳系最高的火山。它大约有多高？</p>
+      <div id="answers" class="answers">
+        <button data-answer="wrong">8.8 千米</button><button data-answer="correct">21.9 千米</button><button data-answer="wrong">53.2 千米</button>
+      </div>
+      <div id="answerFeedback" class="answer-feedback">选择你的答案</div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="planet3d.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
